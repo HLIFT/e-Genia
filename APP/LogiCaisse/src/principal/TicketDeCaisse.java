@@ -52,7 +52,7 @@ public class TicketDeCaisse extends javax.swing.JFrame {
     
     
     //variable pour le client selectionné
-    private static String C_CodeClient;
+    private static String C_CodeClient = "0";
     private static String C_Nom;
     private static String C_Prenom;
     private static String C_DateCrea;
@@ -975,7 +975,7 @@ public class TicketDeCaisse extends javax.swing.JFrame {
         jLabel7.setForeground(new java.awt.Color(0, 153, 255));
         jLabel7.setText("Numéro : ");
 
-        labelCodeClient.setText("1");
+        labelCodeClient.setText(C_CodeClient);
 
         jLabel8.setForeground(new java.awt.Color(0, 153, 255));
         jLabel8.setText("Points :");
@@ -1299,6 +1299,7 @@ public class TicketDeCaisse extends javax.swing.JFrame {
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         totalTTC = 0.0;
+        totalHT = 0.0;
     }//GEN-LAST:event_formWindowClosed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
@@ -1318,8 +1319,8 @@ public class TicketDeCaisse extends javax.swing.JFrame {
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
         try {
-            String sql = "INSERT INTO TicketDeCaisse( TDC_RemiseTicket, TDC_Date, TDC_Heure, Client_idClient, MoyenDePaiment_idMoyenDePaiment, UserApp_iduser_app) VALUES (?,?,?,?,?,?)";
-            PreparedStatement insertTDC = conn.prepareStatement(sql);
+            String sqlinsertTDC = "INSERT INTO TicketDeCaisse( TDC_RemiseTicket, TDC_Date, TDC_Heure, Client_idClient, MoyenDePaiment_idMoyenDePaiment, UserApp_iduser_app) VALUES (?,?,?,?,?,?)";
+            PreparedStatement insertTDC = conn.prepareStatement(sqlinsertTDC);
             
             LocalDate localDate = LocalDate.now();
             LocalTime localTime = LocalTime.now();
@@ -1332,16 +1333,34 @@ public class TicketDeCaisse extends javax.swing.JFrame {
             insertTDC.setInt(6,Données.getDUA_Id());
 
             insertTDC.execute();
-            insertTDC.close();
             
-            String sql2 = "SELECT MAX(idTicketDeCaisse) FROM TicketDeCaisse;";
+            
+            String sqlmaxid = "SELECT MAX(idTicketDeCaisse) FROM TicketDeCaisse;";
             Statement maxIdStatement = conn.createStatement();
-            ResultSet result = maxIdStatement.executeQuery(sql2);
+            ResultSet result = maxIdStatement.executeQuery(sqlmaxid);
             int maxid = 0;
             while(result.next()){
                 maxid = result.getInt("MAX(idTicketDeCaisse)");
             }
-            System.out.println(maxid);
+            
+            insertTDC.close();
+            
+            String sqlLTDC = "INSERT INTO LigneTDC (LTDC_Quantite, LTDC_RemiseLigne, Article_idArticle, TicketDeCaisse_idTicketDeCaisse) VALUES (?, ?, ?, ?);";
+            PreparedStatement insertLTDC = conn.prepareStatement(sqlLTDC);
+            
+            int longueurTable = jTable1.getRowCount()-1;
+            System.out.println(longueurTable);
+            for(int i = 0; i<longueurTable;i++){
+                insertLTDC.setString(1,jTable1.getValueAt(i, 3).toString());
+                insertLTDC.setString(2,jTable1.getValueAt(i, 4).toString());
+                insertLTDC.setString(3,jTable1.getValueAt(i, 6).toString());
+                insertLTDC.setInt(4,maxid);
+                
+                insertLTDC.execute();
+            }
+            
+            insertLTDC.close();
+            
         
         }catch (CommunicationsException e) {
             Bdd.lostCO(e);       
@@ -1359,6 +1378,7 @@ public class TicketDeCaisse extends javax.swing.JFrame {
      */
     public static void main(String args[]) {
         if(Données.getDUA_Encaissement() == 1){ //Verifie si l'utilisateur qui s'est connecté a les droits sur l'encaissement
+            IdClientComptoir();
             try {
                 UIManager.setLookAndFeel( new FlatLightLaf() );
             } catch( Exception ex ) {
@@ -1661,6 +1681,25 @@ public class TicketDeCaisse extends javax.swing.JFrame {
         
        
     } 
+          
+    private static int IdClientComptoir(){ 
+        int idClientCompoire_BDD = 1;
+        try {
+            Statement state = conn.createStatement();
+            ResultSet result = state.executeQuery("SELECT C_GidClientcomptoire FROM Conf_G");
+            
+            while(result.next()){
+                C_CodeClient = result.getString("C_GidClientcomptoire");
+            }
+            result.close();
+            state.close();
+        } catch (CommunicationsException e) {
+            Bdd.lostCO(e);
+        } catch (SQLException ex) {
+            Logger.getLogger(ConnexionApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return idClientCompoire_BDD;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel AfficheControlePrixTDC;
