@@ -185,7 +185,7 @@ public class HistoriqueES extends javax.swing.JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(Données.getNomLogiciel() + " | Entrées/Sorties ");
+        setTitle(Données.getNomLogiciel() + " | Historique Entrées/Sorties ");
         setSize(new java.awt.Dimension(1920, 1080));
 
         jPanel3.setBackground(new java.awt.Color(Données.getCouleurPrincipale1(), Données.getCouleurPrincipale2(), Données.getCouleurPrincipale3()));

@@ -12,7 +12,7 @@ package principal;
 public class Données {
     
     private final static String nomLogiciel = "e-GENIA";
-    private final static String version = "1.1 (BETA) ";
+    private final static String version = "1.2 (BETA) ";
     
     private final static int couleurPrincipale1 = 58;
     private final static int couleurPrincipale2 = 142;

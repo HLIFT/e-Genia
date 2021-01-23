@@ -7,7 +7,16 @@ package principal;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import com.mysql.jdbc.exceptions.jdbc4.CommunicationsException;
+import com.qoppa.pdfWriter.PDFDocument;
+import com.qoppa.pdfWriter.PDFPage;
 import extend.UserListCellRenderer;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.print.PageFormat;
+import java.awt.print.Paper;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,10 +32,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 /**
  *
@@ -37,7 +52,7 @@ public class TicketDeCaisse extends javax.swing.JFrame {
 
     private static int NbColonneTDC = 9;
     private static Object[][] TDC = new Object[1][NbColonneTDC];
-    private static String [] nomColTDC = { "Code Barre", "Désignation article", "Prix TTC", "Quantité", "Réduction %", "TOTAL Ligne", "#idarticle", "#prixHT", "#totalLigneHT"};
+    private static String [] nomColTDC = { "Code Barres", "Désignation article", "Prix TTC", "Quantité", "Réduction %", "TOTAL Ligne", "#idarticle", "#prixHT", "#totalLigneHT"};
 
     private static boolean[] EditR = new boolean[] {true, false, false, false, false, false, false, false, false };
     private static boolean[] EditR_edit = new boolean[] {false, false, false, true, true, false, false, false, false };
@@ -66,6 +81,8 @@ public class TicketDeCaisse extends javax.swing.JFrame {
     
     private static int confirmMDP = 0;
     private static float remise = 0;
+    private static int remise_pts = 0;
+    private static boolean etat_remise=false;
     
     
     private static String contenuBlocNote;
@@ -88,6 +105,8 @@ public class TicketDeCaisse extends javax.swing.JFrame {
         controlePrixTDC.setLocationRelativeTo(this);
         blocNoteTDC.setIconImage(icon.getImage());
         blocNoteTDC.setLocationRelativeTo(this);
+        utiliserRemise.setIconImage(icon.getImage());
+        utiliserRemise.setLocationRelativeTo(this);
         setExtendedState(JFrame.MAXIMIZED_BOTH); // ouvrture de la fenetre en full screen
         
         canEdit.add(EditR);
@@ -166,6 +185,15 @@ public class TicketDeCaisse extends javax.swing.JFrame {
         jButton8 = new javax.swing.JButton();
         erreurControlePrixTDC = new javax.swing.JLabel();
         AfficheControlePrixTDC = new javax.swing.JLabel();
+        utiliserRemise = new javax.swing.JDialog();
+        jPanel19 = new javax.swing.JPanel();
+        jPanel20 = new javax.swing.JPanel();
+        NomLogiciel7 = new javax.swing.JLabel();
+        jLabel21 = new javax.swing.JLabel();
+        jButton9 = new javax.swing.JButton();
+        jLabel22 = new javax.swing.JLabel();
+        jButton12 = new javax.swing.JButton();
+        labelRemise = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         NomLogiciel = new javax.swing.JLabel();
@@ -210,7 +238,7 @@ public class TicketDeCaisse extends javax.swing.JFrame {
         jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(255, 0, 51));
         jLabel11.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel11.setText("Erreur : L'article saisi est inexistant ou desactivé ! ");
+        jLabel11.setText("Erreur : L'article saisi est inexistant ou désactivé ! ");
 
         jPanel9.setBackground(new java.awt.Color(Données.getCouleurPrincipale1(), Données.getCouleurPrincipale2(), Données.getCouleurPrincipale3()));
 
@@ -307,6 +335,7 @@ public class TicketDeCaisse extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel4.setText("Code Client : ");
 
+        jButton6.setBackground(new java.awt.Color(102, 255, 102));
         jButton6.setText("Valider");
         jButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -405,7 +434,7 @@ public class TicketDeCaisse extends javax.swing.JFrame {
         );
 
         jButton10.setBackground(new java.awt.Color(255, 204, 102));
-        jButton10.setText("Carte Banquaire");
+        jButton10.setText("Carte Bancaire");
         jButton10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton10ActionPerformed(evt);
@@ -534,7 +563,7 @@ public class TicketDeCaisse extends javax.swing.JFrame {
             }
         });
 
-        jButton13.setBackground(new java.awt.Color(0, 204, 0));
+        jButton13.setBackground(new java.awt.Color(102, 255, 102));
         jButton13.setText("Valider TDC");
         jButton13.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -611,19 +640,19 @@ public class TicketDeCaisse extends javax.swing.JFrame {
                         .addComponent(jPanel13, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel7Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 120, Short.MAX_VALUE)
                                 .addComponent(jPanel12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel7Layout.createSequentialGroup()
                                 .addGap(44, 44, 44)
                                 .addComponent(MDPlabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                     .addGroup(jPanel7Layout.createSequentialGroup()
-                        .addGap(48, 48, 48)
-                        .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(26, 26, 26)
+                        .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(33, 33, 33)
-                        .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(50, 50, 50)
-                        .addComponent(jButton14, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 144, Short.MAX_VALUE)
+                        .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(28, 28, 28)
+                        .addComponent(jButton14, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(48, 48, 48))
         );
@@ -700,7 +729,7 @@ public class TicketDeCaisse extends javax.swing.JFrame {
         textareaBlocNote.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jScrollPane2.setViewportView(textareaBlocNote);
 
-        validerBlocNote.setBackground(new java.awt.Color(0, 255, 0));
+        validerBlocNote.setBackground(new java.awt.Color(102, 255, 102));
         validerBlocNote.setText("VALIDER");
         validerBlocNote.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         validerBlocNote.addActionListener(new java.awt.event.ActionListener() {
@@ -800,7 +829,7 @@ public class TicketDeCaisse extends javax.swing.JFrame {
         jLabel15.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel15.setText("Code Barre : ");
 
-        jButton8.setBackground(new java.awt.Color(153, 255, 153));
+        jButton8.setBackground(new java.awt.Color(102, 255, 102));
         jButton8.setText("Valider");
         jButton8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -857,6 +886,106 @@ public class TicketDeCaisse extends javax.swing.JFrame {
         controlePrixTDCLayout.setVerticalGroup(
             controlePrixTDCLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel17, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        utiliserRemise.setTitle(Données.getNomLogiciel() + " | Utiliser remise ");
+        utiliserRemise.setResizable(false);
+        utiliserRemise.setSize(new java.awt.Dimension(800, 337));
+
+        jPanel19.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel19.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+
+        jPanel20.setBackground(new java.awt.Color(Données.getCouleurPrincipale1(), Données.getCouleurPrincipale2(), Données.getCouleurPrincipale3()));
+
+        NomLogiciel7.setFont(new java.awt.Font("Tahoma", 2, 36)); // NOI18N
+        NomLogiciel7.setForeground(new java.awt.Color(255, 255, 255));
+        NomLogiciel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        NomLogiciel7.setText(Données.getNomLogiciel());
+
+        javax.swing.GroupLayout jPanel20Layout = new javax.swing.GroupLayout(jPanel20);
+        jPanel20.setLayout(jPanel20Layout);
+        jPanel20Layout.setHorizontalGroup(
+            jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(NomLogiciel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel20Layout.setVerticalGroup(
+            jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel20Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(NomLogiciel7)
+                .addContainerGap())
+        );
+
+        jLabel21.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel21.setText("Une remise est disponible :");
+
+        jButton9.setBackground(new java.awt.Color(102, 255, 102));
+        jButton9.setText("Oui");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
+
+        jLabel22.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel22.setText("Voulez vous l'utiliser ?");
+
+        jButton12.setBackground(new java.awt.Color(255, 51, 51));
+        jButton12.setText("Non");
+        jButton12.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton12ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel19Layout = new javax.swing.GroupLayout(jPanel19);
+        jPanel19.setLayout(jPanel19Layout);
+        jPanel19Layout.setHorizontalGroup(
+            jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel20, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel19Layout.createSequentialGroup()
+                .addGroup(jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel19Layout.createSequentialGroup()
+                        .addGap(238, 238, 238)
+                        .addComponent(jLabel21)
+                        .addGap(18, 18, 18)
+                        .addComponent(labelRemise, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel19Layout.createSequentialGroup()
+                        .addGap(315, 315, 315)
+                        .addGroup(jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel19Layout.createSequentialGroup()
+                                .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(23, 23, 23)
+                                .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel22))))
+                .addContainerGap(276, Short.MAX_VALUE))
+        );
+        jPanel19Layout.setVerticalGroup(
+            jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel19Layout.createSequentialGroup()
+                .addComponent(jPanel20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(64, 64, 64)
+                .addGroup(jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelRemise, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(32, 32, 32)
+                .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton9, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton12, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(60, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout utiliserRemiseLayout = new javax.swing.GroupLayout(utiliserRemise.getContentPane());
+        utiliserRemise.getContentPane().setLayout(utiliserRemiseLayout);
+        utiliserRemiseLayout.setHorizontalGroup(
+            utiliserRemiseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel19, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        utiliserRemiseLayout.setVerticalGroup(
+            utiliserRemiseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -944,6 +1073,7 @@ public class TicketDeCaisse extends javax.swing.JFrame {
 
         jLabel9.setFont(new java.awt.Font("Tahoma", 1, 17)); // NOI18N
         jLabel9.setForeground(new java.awt.Color(0, 153, 255));
+        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel9.setText("Création Ticket de Caisse");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -1022,7 +1152,12 @@ public class TicketDeCaisse extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jButton1.setText("Duplicatat");
+        jButton1.setText("Duplicata");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Bloc note");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -1045,7 +1180,7 @@ public class TicketDeCaisse extends javax.swing.JFrame {
             }
         });
 
-        jButton5.setBackground(new java.awt.Color(0, 204, 0));
+        jButton5.setBackground(new java.awt.Color(102, 255, 102));
         jButton5.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         jButton5.setText("TOTAL");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
@@ -1114,30 +1249,25 @@ public class TicketDeCaisse extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(jPanel1Layout.createSequentialGroup()
                             .addContainerGap()
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 150, Short.MAX_VALUE)
-                                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(119, 119, 119)
-                                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                                    .addGap(0, 0, Short.MAX_VALUE)
-                                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 150, Short.MAX_VALUE)
+                            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(119, 119, 119)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addGap(18, 18, 18)
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addGap(52, 52, 52)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1564, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGap(0, 0, Short.MAX_VALUE)))
+                            .addGap(18, 18, 18)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGap(52, 52, 52)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1564, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(0, 0, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addContainerGap())
             );
             jPanel1Layout.setVerticalGroup(
@@ -1160,14 +1290,14 @@ public class TicketDeCaisse extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createSequentialGroup()
                             .addGap(72, 72, 72)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 591, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                             .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGap(64, 64, 64))
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                            .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap())))
+                            .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(29, 29, 29))))
             );
 
             javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -1223,9 +1353,8 @@ public class TicketDeCaisse extends javax.swing.JFrame {
             validerTDC.setVisible(true);
 
             if ( CF_Points > 0){
-                float remis = 0;
                 try {
-                    String sql = "SELECT PF_ReducEuro FROM PalierFid WHERE PF_PalierPts < ? ORDER BY PF_ReducEuro DESC";
+                    String sql = "SELECT PF_ReducEuro, PF_PalierPts FROM PalierFid WHERE PF_PalierPts < ? ORDER BY PF_ReducEuro DESC";
                     PreparedStatement findART = conn.prepareStatement(sql);
                     findART.setInt(1,CF_Points);
                     ResultSet result = findART.executeQuery();
@@ -1233,6 +1362,7 @@ public class TicketDeCaisse extends javax.swing.JFrame {
                     int F = 0;
                     while(result.next() && F == 0){
                         remise = result.getFloat("PF_ReducEuro");
+                        remise_pts = result.getInt("PF_PalierPts");
                         F = 1;
                     }
 
@@ -1246,7 +1376,15 @@ public class TicketDeCaisse extends javax.swing.JFrame {
                 catch (SQLException ex) {
                     Logger.getLogger(ConnexionApp.class.getName()).log(Level.SEVERE, null, ex);
                 }
-                System.out.println(remise + " €");
+                
+                if (etat_remise==false){
+                    if (remise != 0.0){
+                    System.out.println(remise + " €");
+                    utiliserRemise.setVisible(true);
+                    labelRemise.setText(String.valueOf(remise)+" €");
+                    }
+                }
+                
             }
         }//else total 0€
         
@@ -1267,13 +1405,14 @@ public class TicketDeCaisse extends javax.swing.JFrame {
             validerBlocNote.execute(); // On execute la requete SQL
             validerBlocNote.close(); // on ferme la requete
             recupBlocNote();
-            InterfaceUser.recupBlocNote();
             blocNoteTDC.dispose();
         } catch (CommunicationsException e) {
             Bdd.lostCO(e); // Si il y a un probleme de connexion on lance la fenetre de perte de connexion
         } catch (SQLException ex) {
             Logger.getLogger(ConnexionApp.class.getName()).log(Level.SEVERE, null, ex); // rapport d'erreur SQL
         }
+        InterfaceUser.recupBlocNote();
+
     }//GEN-LAST:event_validerBlocNoteActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -1300,6 +1439,7 @@ public class TicketDeCaisse extends javax.swing.JFrame {
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
         totalTTC = 0.0;
         totalHT = 0.0;
+        etat_remise=false;
     }//GEN-LAST:event_formWindowClosed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
@@ -1319,13 +1459,19 @@ public class TicketDeCaisse extends javax.swing.JFrame {
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
         try {
+            
             String sqlinsertTDC = "INSERT INTO TicketDeCaisse( TDC_RemiseTicket, TDC_Date, TDC_Heure, Client_idClient, MoyenDePaiment_idMoyenDePaiment, UserApp_iduser_app) VALUES (?,?,?,?,?,?)";
             PreparedStatement insertTDC = conn.prepareStatement(sqlinsertTDC);
             
             LocalDate localDate = LocalDate.now();
             LocalTime localTime = LocalTime.now();
             
-            insertTDC.setFloat(1,remise);
+            if(etat_remise==false){
+                insertTDC.setFloat(1,0);
+            }
+            else{
+                insertTDC.setFloat(1,remise);
+            }
             insertTDC.setString(2,localDate.toString());
             insertTDC.setString(3,localTime.toString());
             insertTDC.setString(4,labelConfirmNumClient.getText());
@@ -1334,16 +1480,137 @@ public class TicketDeCaisse extends javax.swing.JFrame {
 
             insertTDC.execute();
             
-            
-            String sqlmaxid = "SELECT MAX(idTicketDeCaisse) FROM TicketDeCaisse;";
-            Statement maxIdStatement = conn.createStatement();
-            ResultSet result = maxIdStatement.executeQuery(sqlmaxid);
-            int maxid = 0;
-            while(result.next()){
-                maxid = result.getInt("MAX(idTicketDeCaisse)");
-            }
-            
             insertTDC.close();
+            
+            JTable jTable2 = jTable1;
+            int maxid = maxIdTDC();
+            
+            
+            jTable2.repaint();
+            jTable2.revalidate();
+        
+            // On crée le panel qui sera mis dans la page pdf en y ajoutant des composants Swing
+            JPanel page = new JPanel(new FlowLayout());
+            page.setSize(1703, 2420);
+            page.setVisible(true);
+            page.setBackground(new java.awt.Color(255, 255, 255));
+            
+            
+            JLabel label = new JLabel("Ticket de caisse n°"+maxid, SwingConstants.CENTER);
+            label.setFont (label.getFont ().deriveFont (36.0f));
+            label.setVisible(true);
+            label.setSize(1703, 50);
+            label.setLocation(15, 47);
+            JLabel label2 = new JLabel();
+            if(this.C_Prenom!=null && this.C_Nom!=null) {
+                label2 = new JLabel("Client : "+this.C_Prenom+" "+this.C_Nom, SwingConstants.CENTER);
+            } else {
+                label2 = new JLabel("Client comptoir", SwingConstants.CENTER);  
+            }
+            label2.setFont (label.getFont ().deriveFont (36.0f));
+            label2.setVisible(true);
+            label2.setSize(1703, 50);
+            label2.setLocation(15, 100);
+
+            JLabel label3 = new JLabel("Date : "+localDate.toString()+" "+localTime.toString(), SwingConstants.CENTER);
+            label3.setFont (label.getFont ().deriveFont (36.0f));
+            label3.setVisible(true);
+            label3.setSize(1703, 50);
+            label3.setLocation(15, 170);
+
+            JLabel label4 = new JLabel("Prix TTC : "+labelConfirmTotalTTC.getText(), SwingConstants.CENTER);
+            label4.setFont (label.getFont ().deriveFont (36.0f));
+            label4.setVisible(true);
+            label4.setSize(1703, 50);
+            label4.setLocation(15, 240);
+
+            JLabel label5 = new JLabel(MDPlabel.getText(), SwingConstants.CENTER);
+            label5.setFont (label.getFont ().deriveFont (36.0f));
+            label5.setVisible(true);
+            label5.setSize(1703, 50);
+            label5.setLocation(15, 310);
+
+            
+            JLabel logo = new JLabel();
+            logo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/logo_recap.png")));
+            logo.setVisible(true);
+            logo.setSize(274, 164);
+            logo.setLocation(50, 20);
+            logo.setFont(logo.getFont().deriveFont(36.0f));
+
+            JTableHeader header = jTable2.getTableHeader();
+            header.setLocation(50,  480);
+            header.setFont(new Font("Arial", Font.BOLD, 24));
+            header.setSize(2000,110);
+
+            page.add(logo);
+            page.add(label);
+            page.add(label2);
+            page.add(label3);
+            page.add(label4);
+            page.add(label5);
+            page.add(header);
+
+            jTable2.setLocation(50, 590);
+            jTable2.setFont(new Font("Arial", Font.PLAIN, 24));
+            jTable2.setSize(2000,2120);
+            jTable2.setShowGrid(false);
+            jTable2.setShowHorizontalLines(true);
+            jTable2.setGridColor(new java.awt.Color(190, 190, 190));
+            jTable2.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+
+            DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+            centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+            for(int i = 0; i<6; i++) {
+                jTable2.getColumnModel().getColumn(i).setCellRenderer( centerRenderer );
+                
+            }
+            jTable2.setRowHeight(60);
+            
+            jTable2.getColumnModel().getColumn(2).setMaxWidth(200);
+            jTable2.getColumnModel().getColumn(2).setMinWidth(200);
+            jTable2.getColumnModel().getColumn(2).setPreferredWidth(200);
+            jTable2.getColumnModel().getColumn(3).setMaxWidth(200);
+            jTable2.getColumnModel().getColumn(3).setMinWidth(200);
+            jTable2.getColumnModel().getColumn(3).setPreferredWidth(200);
+            jTable2.getColumnModel().getColumn(4).setMaxWidth(200);
+            jTable2.getColumnModel().getColumn(4).setMinWidth(200);
+            jTable2.getColumnModel().getColumn(4).setPreferredWidth(200);
+            jTable2.getColumnModel().getColumn(5).setMaxWidth(350);
+            jTable2.getColumnModel().getColumn(5).setMinWidth(350);
+            jTable2.getColumnModel().getColumn(5).setPreferredWidth(350);
+
+            page.add(jTable2);
+
+            //On crée la page pdf elle-même
+            Paper p = new Paper();
+            p.setSize(8.25 * 72, 11.75 * 72);
+            p.setImageableArea(0, 0, 8.25 * 72, 11.75 * 72);
+            PageFormat pf = new PageFormat();
+            pf.setPaper(p);
+            PDFDocument pdfDoc = new PDFDocument();
+            // Create page
+            PDFPage pagePDF = pdfDoc.createPage(pf);
+
+            // Add page to document
+            pdfDoc.addPage(pagePDF);
+            // get graphics object from the page
+            Graphics2D g2d = pagePDF.createGraphics();
+            g2d.scale(0.35, 0.35);
+            // myComponent being a JComponent showing on the screen
+            page.print(g2d);
+
+
+            File outFile = new File("temp/ticketdecaisse.pdf");
+
+            // save document
+            try {
+                pdfDoc.saveDocument(outFile.getAbsolutePath());
+            } catch (IOException ex) {
+                Logger.getLogger(Etiquettes.class.getName()).log(Level.SEVERE, null, ex);
+            };
+            extend.ouvrirPDF.ouvrirDocPdf("temp/ticketdecaisse.pdf");
+        
             
             String sqlLTDC = "INSERT INTO LigneTDC (LTDC_Quantite, LTDC_RemiseLigne, Article_idArticle, TicketDeCaisse_idTicketDeCaisse) VALUES (?, ?, ?, ?);";
             PreparedStatement insertLTDC = conn.prepareStatement(sqlLTDC);
@@ -1361,16 +1628,109 @@ public class TicketDeCaisse extends javax.swing.JFrame {
             
             insertLTDC.close();
             
+            String sqlPTS = "SELECT C_GeuroPts FROM Conf_G";
+            Statement PTSStatement = conn.createStatement();
+            ResultSet resultPTS = PTSStatement.executeQuery(sqlPTS);
+            int pts = 0;
+            while(resultPTS.next()){
+                pts = resultPTS.getInt("C_GeuroPts");
+            }
+            
+            String sqlCF = "SELECT CarteFid_idCarteFid FROM Client where idClient = "+ labelConfirmNumClient.getText();
+            Statement CFStatement = conn.createStatement();
+            ResultSet resultCF = CFStatement.executeQuery(sqlCF);
+            int CFID = 0;
+            while(resultCF.next()){
+                CFID = resultCF.getInt("CarteFid_idCarteFid");
+            }
+            
+            if(CFID!=0){
+                String sqlUpdateCF = "UPDATE CarteFid SET CF_points = CF_points + ?*? where idCarteFid = ? ";
+                PreparedStatement UpdateCFStatement = conn.prepareStatement(sqlUpdateCF);
+                int prixTTC = (int)totalTTC;
+                System.out.println(prixTTC);
+                UpdateCFStatement.setInt(1,prixTTC);
+                UpdateCFStatement.setInt(2,pts);
+                UpdateCFStatement.setInt(3,CFID);
+                
+                UpdateCFStatement.execute();
+                UpdateCFStatement.close();
+            }
+            
+            String sqlUpdateStock = "UPDATE Article SET A_Stock = A_Stock - ABS(?), A_DerniereVente = ? where idArticle = ? ";
+            PreparedStatement UpdateStockStatement = conn.prepareStatement(sqlUpdateStock);
+                
+            for(int i = 0; i<longueurTable;i++){
+                System.out.println(jTable1.getValueAt(i, 3).toString());
+                System.out.println(jTable1.getValueAt(i, 6).toString());
+                UpdateStockStatement.setString(1,jTable1.getValueAt(i, 3).toString());
+                UpdateStockStatement.setString(2,localDate.toString());
+                UpdateStockStatement.setString(3,jTable1.getValueAt(i, 6).toString());
+                UpdateStockStatement.execute();
+            }
+
+            UpdateStockStatement.close();
+            
+            
         
         }catch (CommunicationsException e) {
             Bdd.lostCO(e);       
             
         }catch (SQLException ex) {
             Logger.getLogger(ConnexionApp.class.getName()).log(Level.SEVERE, null, ex);
-        } 
+        }
+        if (etat_remise==true){
+            try {                    
+                String sql = "UPDATE CarteFid SET CF_Points=? WHERE idCarteFid = ?";
+                PreparedStatement modifPtsFid = conn.prepareStatement(sql);
+                int r= CF_Points-remise_pts;
+                modifPtsFid.setInt(1,r);
+                modifPtsFid.setString(2,CarteFid_idCarteFid);  
+
+                modifPtsFid.execute();
+                modifPtsFid.close();
+
+            } 
+            catch (CommunicationsException e) {
+                Bdd.lostCO(e);        
+            }
+            catch (SQLException ex) {
+                Logger.getLogger(ConnexionApp.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         
-        
+        validerTDC.setVisible(false);
+        TicketDeCaisse.main(null);
+        this.dispose();
     }//GEN-LAST:event_jButton13ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        
+        totalTTC=totalTTC-remise;
+        totalHT-=remise;
+        majTotalHTLabel();
+        majTotalTTCLabel();
+        
+        DecimalFormat df = new DecimalFormat("#0.00");
+        DecimalFormatSymbols Symbole = new DecimalFormatSymbols();
+        Symbole.setDecimalSeparator('.');
+        df.setDecimalFormatSymbols(Symbole);
+        labelConfirmTotalTTC.setText(df.format(totalTTC) + " €");
+        labelConfirmTotalHT.setText(df.format(totalHT) + " €");
+        
+        etat_remise=true;
+  
+        utiliserRemise.setVisible(false);
+                
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+        utiliserRemise.setVisible(false);
+    }//GEN-LAST:event_jButton12ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        HistoriqueTDC.main(null);
+    }//GEN-LAST:event_jButton1ActionPerformed
     
     
     /**
@@ -1541,7 +1901,7 @@ public class TicketDeCaisse extends javax.swing.JFrame {
             float Rsaisi = Float.valueOf(jTable1.getModel().getValueAt(row, 4).toString());
             float prixProduit = (float) jTable1.getModel().getValueAt(row, 2);
             float MontantR = Rsaisi/100 * prixProduit * QTTsaisi;
-            float newTotalLigne = prixProduit * QTTsaisi - MontantR;
+            float newTotalLigne = Math.abs(prixProduit * QTTsaisi - MontantR);
             jTable1.getModel().setValueAt(newTotalLigne, row, 5);
             totalTTC += newTotalLigne;
             majTotalTTCLabel();
@@ -1549,8 +1909,8 @@ public class TicketDeCaisse extends javax.swing.JFrame {
             float lastTotalLigneHT = (float) jTable1.getModel().getValueAt(row, 8);
             totalHT -= lastTotalLigneHT;
             float prixProduitHT = (float) jTable1.getModel().getValueAt(row, 7);
-            float MontantRHT = Rsaisi/100 * prixProduitHT * QTTsaisi;
-            float newTotalLigneHT = prixProduitHT * QTTsaisi - MontantRHT;
+            float MontantRHT = Math.abs(Rsaisi/100 * prixProduitHT * QTTsaisi);
+            float newTotalLigneHT = Math.abs(prixProduitHT * QTTsaisi - MontantRHT);
             jTable1.getModel().setValueAt(newTotalLigneHT, row, 8);
             totalHT += newTotalLigneHT;
             majTotalHTLabel();
@@ -1662,7 +2022,7 @@ public class TicketDeCaisse extends javax.swing.JFrame {
         LabelTotalHT.setText(df.format(totalHT) + " €");
     }
     
-        public static void recupBlocNote(){
+    public static void recupBlocNote(){
         try {
             Statement state = conn.createStatement();
             ResultSet result = state.executeQuery("SELECT contenuBlocNote FROM BlocNote WHERE idBlocNote = 1"); // on récupere le contenu de bloc note dans la base de données
@@ -1681,6 +2041,27 @@ public class TicketDeCaisse extends javax.swing.JFrame {
         
        
     } 
+    
+    
+    private static int maxIdTDC(){
+        int maxid = 0;
+        try {
+            String sqlmaxid = "SELECT MAX(idTicketDeCaisse) FROM TicketDeCaisse;";
+            Statement maxIdStatement = conn.createStatement();
+            ResultSet result = maxIdStatement.executeQuery(sqlmaxid);
+            
+            while(result.next()){
+                maxid = result.getInt("MAX(idTicketDeCaisse)");
+                System.out.println("Max id" + maxid );
+            }
+            maxIdStatement.close();
+            result.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(TicketDeCaisse.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return maxid;
+    }
+    
           
     private static int IdClientComptoir(){ 
         int idClientCompoire_BDD = 1;
@@ -1713,6 +2094,7 @@ public class TicketDeCaisse extends javax.swing.JFrame {
     private javax.swing.JLabel NomLogiciel4;
     private javax.swing.JLabel NomLogiciel5;
     private javax.swing.JLabel NomLogiciel6;
+    private javax.swing.JLabel NomLogiciel7;
     private javax.swing.JDialog blocNoteTDC;
     private javax.swing.JTextField codeBarreSaisie;
     private javax.swing.JDialog controlePrixTDC;
@@ -1721,6 +2103,7 @@ public class TicketDeCaisse extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
+    private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton14;
     private javax.swing.JButton jButton2;
@@ -1730,6 +2113,7 @@ public class TicketDeCaisse extends javax.swing.JFrame {
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
     private javax.swing.JButton jButtonErreurFermer1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -1744,6 +2128,8 @@ public class TicketDeCaisse extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
@@ -1760,7 +2146,9 @@ public class TicketDeCaisse extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel16;
     private javax.swing.JPanel jPanel17;
     private javax.swing.JPanel jPanel18;
+    private javax.swing.JPanel jPanel19;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel20;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
@@ -1786,8 +2174,10 @@ public class TicketDeCaisse extends javax.swing.JFrame {
     private javax.swing.JLabel labelErreurCodeClient;
     private javax.swing.JLabel labelNbPts;
     private javax.swing.JLabel labelNomPrenomClient;
+    private javax.swing.JLabel labelRemise;
     private javax.swing.JDialog selClient;
     private javax.swing.JTextArea textareaBlocNote;
+    private javax.swing.JDialog utiliserRemise;
     private javax.swing.JButton validerBlocNote;
     private javax.swing.JDialog validerTDC;
     // End of variables declaration//GEN-END:variables

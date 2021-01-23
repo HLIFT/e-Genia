@@ -7,6 +7,7 @@ package principal;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import com.mysql.jdbc.exceptions.jdbc4.CommunicationsException;
+import java.awt.event.KeyEvent;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -99,6 +100,7 @@ public class InterfaceUser extends javax.swing.JFrame {
         jMenuItem7 = new javax.swing.JMenuItem();
         MenuEncaissement = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem8 = new javax.swing.JMenuItem();
         MenuAchatVente = new javax.swing.JMenu();
         menu_vente = new javax.swing.JMenuItem();
         jMenuItemAlerteStock = new javax.swing.JMenuItem();
@@ -208,7 +210,7 @@ public class InterfaceUser extends javax.swing.JFrame {
             }
         });
 
-        ButtonAchats.setText("Achats");
+        ButtonAchats.setText("Stock | F3");
         ButtonAchats.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ButtonAchatsActionPerformed(evt);
@@ -368,7 +370,7 @@ public class InterfaceUser extends javax.swing.JFrame {
         textareaBlocNote.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jScrollPane1.setViewportView(textareaBlocNote);
 
-        validerBlocNote.setBackground(new java.awt.Color(0, 255, 0));
+        validerBlocNote.setBackground(new java.awt.Color(102, 255, 102));
         validerBlocNote.setText("VALIDER");
         validerBlocNote.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         validerBlocNote.addActionListener(new java.awt.event.ActionListener() {
@@ -486,7 +488,12 @@ public class InterfaceUser extends javax.swing.JFrame {
         });
         jMenu1.add(jMenuItem6);
 
-        jMenuItem4.setText("Moyen De Paiment");
+        jMenuItem4.setText("Moyens De Paiement");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem4);
 
         jMenuItem3.setText("TVA");
@@ -509,7 +516,7 @@ public class InterfaceUser extends javax.swing.JFrame {
         MenuFichier.add(jSeparator2);
         MenuFichier.add(jSeparator3);
 
-        MenuItemQuitter.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_DOWN_MASK));
+        MenuItemQuitter.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
         MenuItemQuitter.setText("Quitter");
         MenuItemQuitter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -551,10 +558,19 @@ public class InterfaceUser extends javax.swing.JFrame {
         });
         MenuEncaissement.add(jMenuItem1);
 
+        jMenuItem8.setText("Historique TDC");
+        jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem8ActionPerformed(evt);
+            }
+        });
+        MenuEncaissement.add(jMenuItem8);
+
         MenuBar.add(MenuEncaissement);
 
         MenuAchatVente.setText("Entrées/Sorties");
 
+        menu_vente.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F3, 0));
         menu_vente.setText("Entrée/Sorties");
         menu_vente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -610,7 +626,8 @@ public class InterfaceUser extends javax.swing.JFrame {
     }//GEN-LAST:event_MenuItemQuitterActionPerformed
 
     private void ButtonAchatsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonAchatsActionPerformed
-        // TODO add your handling code here:
+        jDialog1.setLocationRelativeTo(null);
+        jDialog1.setVisible(true);
     }//GEN-LAST:event_ButtonAchatsActionPerformed
 
     private void ButtonSatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonSatActionPerformed
@@ -618,7 +635,7 @@ public class InterfaceUser extends javax.swing.JFrame {
     }//GEN-LAST:event_ButtonSatActionPerformed
 
     private void ButtonRecapitulatifActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonRecapitulatifActionPerformed
-        // TODO add your handling code here:
+        Récapitulatif.main(null);
     }//GEN-LAST:event_ButtonRecapitulatifActionPerformed
 
     private void MenuItemArticlesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MenuItemArticlesActionPerformed
@@ -704,6 +721,14 @@ public class InterfaceUser extends javax.swing.JFrame {
         Récapitulatif.main(null);
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
+    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+        HistoriqueTDC.main(null);
+    }//GEN-LAST:event_jMenuItem8ActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        MoyensDePaiement.main(null);
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -778,6 +803,7 @@ public class InterfaceUser extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
+    private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JMenuItem jMenuItemAlerteStock;
     private javax.swing.JMenuItem jMenuItemConfigMachine;
     private javax.swing.JMenuItem jMenuItemEtiquettes;
@@ -793,7 +819,7 @@ public class InterfaceUser extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JMenuItem menu_vente;
-    private javax.swing.JTextArea textareaBlocNote;
+    private static javax.swing.JTextArea textareaBlocNote;
     private javax.swing.JButton validerBlocNote;
     // End of variables declaration//GEN-END:variables
 }

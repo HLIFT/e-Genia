@@ -36,7 +36,7 @@ public class AlerteStock extends javax.swing.JFrame {
 
     private static int NbColoneTArticle = 4;
     private static Object[][] Article = new Object[countArticleAlerte()][NbColoneTArticle];
-    private static String [] nomColArticle = {"Code Barre", "Désignation", "Stock Acctuel", "Stock d'alerte"};
+    private static String [] nomColArticle = {"Code Barre", "Désignation", "Stock Actuel", "Stock d'alerte"};
     
     /**
      * Creates new form AlerteStock
@@ -100,7 +100,7 @@ public class AlerteStock extends javax.swing.JFrame {
         );
 
         jToggleButton1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jToggleButton1.setText("Impprimer en PDF");
+        jToggleButton1.setText("Imprimer en PDF");
         jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jToggleButton1ActionPerformed(evt);
@@ -173,7 +173,7 @@ public class AlerteStock extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 51, 51));
-        jLabel1.setText("La liste des articles regoupe seulment des articles au statut ACTIF");
+        jLabel1.setText("La liste des articles regoupe seulement des articles au statut ACTIF");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -228,6 +228,7 @@ public class AlerteStock extends javax.swing.JFrame {
         
         jPanel2.print(g2d);
         File outFile = new File("temp/StockAlerte.pdf");
+        extend.ouvrirPDF.ouvrirDocPdf("temp/StockAlerte.pdf");
         
         // save document
         try {

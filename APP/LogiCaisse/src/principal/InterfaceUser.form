@@ -192,8 +192,11 @@
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem4">
                   <Properties>
-                    <Property name="text" type="java.lang.String" value="Moyen De Paiment"/>
+                    <Property name="text" type="java.lang.String" value="Moyens De Paiement"/>
                   </Properties>
+                  <Events>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem4ActionPerformed"/>
+                  </Events>
                 </MenuItem>
                 <MenuItem class="javax.swing.JMenuItem" name="jMenuItem3">
                   <Properties>
@@ -269,6 +272,14 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem1ActionPerformed"/>
               </Events>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem8">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Historique TDC"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem8ActionPerformed"/>
+              </Events>
+            </MenuItem>
           </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="MenuAchatVente">
@@ -278,6 +289,9 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="menu_vente">
               <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="F3"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Entr&#xe9;e/Sorties"/>
               </Properties>
               <Events>
@@ -469,7 +483,7 @@
             </Component>
             <Component class="javax.swing.JButton" name="ButtonAchats">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Achats"/>
+                <Property name="text" type="java.lang.String" value="Stock | F3"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ButtonAchatsActionPerformed"/>
@@ -742,13 +756,16 @@
                       <Color id="Curseur par d&#xe9;faut"/>
                     </Property>
                   </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
+                  </AuxValues>
                 </Component>
               </SubComponents>
             </Container>
             <Component class="javax.swing.JButton" name="validerBlocNote">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="0" green="ff" red="0" type="rgb"/>
+                  <Color blue="66" green="ff" red="66" type="rgb"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="VALIDER"/>
                 <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">

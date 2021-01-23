@@ -60,7 +60,7 @@ public class FamilleArticle extends javax.swing.JFrame {
         boutonAjouter = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(Données.getNomLogiciel() + " | Ficher Famille Article ");
+        setTitle(Données.getNomLogiciel() + " | Fichier Famille Article ");
         setResizable(false);
         setSize(new java.awt.Dimension(654, 550));
 

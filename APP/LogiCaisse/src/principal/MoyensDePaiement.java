@@ -24,18 +24,18 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author etien
  */
-public class TVA extends javax.swing.JFrame {
+public class MoyensDePaiement extends javax.swing.JFrame {
     private static Connection conn = Bdd.coBdd(); //Instanciation de la variable de connexion à la base de données
 
-    private static int NbColonneTVA = 2;
-    private static Object[][] TVA = new Object[countTVA()][NbColonneTVA];
-    private static String [] nomColTVA = { "ID", "Taux TVA"};
-    private static int derniereIndiceLigne;
+    private static int NbColonneMoyenPaiement = 2;
+    private static Object[][] MoyensPaiement = new Object[countMoyensPaiement()][NbColonneMoyenPaiement];
+    private static String [] nomColMoyensPaiement = { "ID", "Moyens Paiement"};
+    private static int dernierIndiceLigne;
 
     /**
      * Creates new form TVA
      */
-    public TVA() {
+    public MoyensDePaiement() {
         initComponents();
         URL iconURL = getClass().getResource(Données.getUrl_Logo());
         ImageIcon icon = new ImageIcon(iconURL);
@@ -60,7 +60,7 @@ public class TVA extends javax.swing.JFrame {
         boutonAjouter = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(Données.getNomLogiciel() + " | Fichier TVA ");
+        setTitle(Données.getNomLogiciel() + " | Fichier Moyens de Paiement ");
         setResizable(false);
         setSize(new java.awt.Dimension(654, 550));
 
@@ -92,12 +92,12 @@ public class TVA extends javax.swing.JFrame {
         jTable1.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
         UserListCellRenderer cellRenderer = new UserListCellRenderer();
         jTable1.setDefaultRenderer(Integer.class, cellRenderer);
-        jTable1.setDefaultRenderer(Float.class, cellRenderer);
+        jTable1.setDefaultRenderer(String.class, cellRenderer);
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            TVA,
-            nomColTVA) {
+            MoyensPaiement,
+            nomColMoyensPaiement) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.Float.class
+                java.lang.Integer.class, java.lang.String.class
             };
 
             boolean[] canEdit = new boolean [] {
@@ -183,47 +183,47 @@ public class TVA extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void boutonValiderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boutonValiderActionPerformed
-        if (jTable1.getRowCount() == countTVA()){
+        if (jTable1.getRowCount() == countMoyensPaiement()){
             System.out.println("MAJ des lignes existantes seulement ");
-            for(int i = 0; i< countTVA();i++){
+            for(int i = 0; i< countMoyensPaiement();i++){
                 try {
-                    String sql = "UPDATE TVA SET TVA_Taux= ? WHERE idTVA = ?";
-                    PreparedStatement majTVA = conn.prepareStatement(sql);
-                    majTVA.setString(1, jTable1.getValueAt(i, 1).toString());
-                    majTVA.setString(2, jTable1.getValueAt(i, 0).toString());
+                    String sql = "UPDATE MoyenDePaiment SET MDP_Type= ? WHERE idMoyenDePaiment = ?";
+                    PreparedStatement majMDP = conn.prepareStatement(sql);
+                    majMDP.setString(1, jTable1.getValueAt(i, 1).toString());
+                    majMDP.setString(2, jTable1.getValueAt(i, 0).toString());
                     
-                    majTVA.execute();
-                    majTVA.close();
+                    majMDP.execute();
+                    majMDP.close();
                 } catch (SQLException ex) {
-                    Logger.getLogger(TVA.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(MoyensDePaiement.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }else{
             System.out.println("MAJ lignes existantes");
-            for(int i = 0; i< countTVA();i++){
+            for(int i = 0; i< countMoyensPaiement();i++){
                 try {
-                    String sql = "UPDATE TVA SET TVA_Taux= ? WHERE idTVA = ?";
-                    PreparedStatement créationTVA = conn.prepareStatement(sql);
-                    créationTVA.setString(1, jTable1.getValueAt(i, 1).toString());
-                    créationTVA.setString(2, jTable1.getValueAt(i, 0).toString());
+                    String sql = "UPDATE MoyenDePaiment SET MDP_Type= ? WHERE idMoyenDePaiment = ?";
+                    PreparedStatement majMDP = conn.prepareStatement(sql);
+                    majMDP.setString(1, jTable1.getValueAt(i, 1).toString());
+                    majMDP.setString(2, jTable1.getValueAt(i, 0).toString());
                     
-                    créationTVA.execute();
-                    créationTVA.close();
+                    majMDP.execute();
+                    majMDP.close();
                 } catch (SQLException ex) {
-                    Logger.getLogger(TVA.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(MoyensDePaiement.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             System.out.println("Ajout des nouvelles lignes");
-            for(int i = countTVA(); i< jTable1.getRowCount() ;i++){
+            for(int i = countMoyensPaiement(); i< jTable1.getRowCount() ;i++){
                 try {
-                    String sql = "INSERT INTO TVA SET TVA_Taux= ?";
-                    PreparedStatement créationTVA = conn.prepareStatement(sql);
-                    créationTVA.setString(1, jTable1.getValueAt(i, 1).toString());
+                    String sql = "INSERT INTO MoyenDePaiment SET MDP_Type= ?";
+                    PreparedStatement creationMoyensPaiement = conn.prepareStatement(sql);
+                    creationMoyensPaiement.setString(1, jTable1.getValueAt(i, 1).toString());
                     
-                    créationTVA.execute();
-                    créationTVA.close();
+                    creationMoyensPaiement.execute();
+                    creationMoyensPaiement.close();
                 } catch (SQLException ex) {
-                    Logger.getLogger(TVA.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(MoyensDePaiement.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             
@@ -231,10 +231,10 @@ public class TVA extends javax.swing.JFrame {
     }//GEN-LAST:event_boutonValiderActionPerformed
 
     private void boutonAjouterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boutonAjouterActionPerformed
-        TVA = new Object[countTVA()+1][NbColonneTVA];
+        MoyensPaiement = new Object[countMoyensPaiement()+1][NbColonneMoyenPaiement];
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        model.addRow(new Object[]{derniereIndiceLigne+1});
-        derniereIndiceLigne++;
+        model.addRow(new Object[]{dernierIndiceLigne+1});
+        dernierIndiceLigne++;
     }//GEN-LAST:event_boutonAjouterActionPerformed
 
     /**
@@ -243,7 +243,7 @@ public class TVA extends javax.swing.JFrame {
     public static void main(String args[]) {
         if(Données.getDUA_Admin() == 1){
             
-            recupTVA();
+            recupMoyensPaiement();
             
             try {
                 UIManager.setLookAndFeel( new FlatLightLaf() );
@@ -253,7 +253,7 @@ public class TVA extends javax.swing.JFrame {
 
             java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
-                    new TVA().setVisible(true);
+                    new MoyensDePaiement().setVisible(true);
                 }
             });
         }else{
@@ -262,16 +262,16 @@ public class TVA extends javax.swing.JFrame {
         
     }
     
-    private static int countTVA(){ 
+    private static int countMoyensPaiement(){ 
         int i = 0;
         try {
             Statement state = conn.createStatement();
-            ResultSet result = state.executeQuery("SELECT COUNT(*) FROM TVA");
+            ResultSet result = state.executeQuery("SELECT COUNT(*) FROM MoyenDePaiment");
             
             while(result.next()){
                 i = result.getInt("COUNT(*)");
             }
-            System.out.println("CountTVA : " + i);
+            System.out.println("CountMoyensPaiement : " + i);
             result.close();
             state.close();
         } catch (CommunicationsException e) {
@@ -282,22 +282,22 @@ public class TVA extends javax.swing.JFrame {
         return i;
     }
     
-    public static void recupTVA(){
+    public static void recupMoyensPaiement(){
         try {
-            Statement stateTVA = conn.createStatement();
-            ResultSet recupTVA = stateTVA.executeQuery("SELECT * FROM TVA");
+            Statement stateMoyensPaiement = conn.createStatement();
+            ResultSet recupMoyensPaiement = stateMoyensPaiement.executeQuery("SELECT * FROM MoyenDePaiment");
             
             int i = 0;
-            while(recupTVA.next()){
-                System.out.println("recupTVA : "+ i);
-                TVA[i][0] = recupTVA.getString("idTVA");
-                TVA[i][1] = recupTVA.getString("TVA_Taux");
+            while(recupMoyensPaiement.next()){
+                System.out.println("recupMotfES : "+ i);
+                MoyensPaiement[i][0] = recupMoyensPaiement.getString("idMoyenDePaiment");
+                MoyensPaiement[i][1] = recupMoyensPaiement.getString("MDP_Type");
                 i++;
             }
-            derniereIndiceLigne = i;
+            dernierIndiceLigne = i;
             
-            recupTVA.close();
-            stateTVA.close();
+            recupMoyensPaiement.close();
+            stateMoyensPaiement.close();
         } catch (CommunicationsException e) {
             Bdd.lostCO(e);
         } catch (SQLException ex) {

@@ -60,7 +60,7 @@ public class MotifsES extends javax.swing.JFrame {
         boutonAjouter = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(Données.getNomLogiciel() + " | Ficher Motifs Entrées Sorties ");
+        setTitle(Données.getNomLogiciel() + " | Fichier Motifs Entrées Sorties ");
         setResizable(false);
         setSize(new java.awt.Dimension(654, 550));
 
@@ -120,6 +120,7 @@ public class MotifsES extends javax.swing.JFrame {
         jTable1.setSelectionForeground(new java.awt.Color(0, 0, 0));
         jScrollPane2.setViewportView(jTable1);
 
+        boutonValider.setBackground(new java.awt.Color(102, 255, 102));
         boutonValider.setText("Valider");
         boutonValider.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

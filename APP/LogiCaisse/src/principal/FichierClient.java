@@ -180,7 +180,7 @@ public class FichierClient extends javax.swing.JFrame {
             }
         });
 
-        jButtonCSOui.setBackground(new java.awt.Color(255, 102, 102));
+        jButtonCSOui.setBackground(new java.awt.Color(255, 51, 51));
         jButtonCSOui.setText("OUI");
         jButtonCSOui.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -189,7 +189,7 @@ public class FichierClient extends javax.swing.JFrame {
         });
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel4.setText("Etes vous sûr de vouloir suprimer cette fiche Article ?");
+        jLabel4.setText("Etes vous sûr de vouloir supprimer cette fiche Client ?");
 
         jPanel7.setBackground(new java.awt.Color(Données.getCouleurPrincipale1(), Données.getCouleurPrincipale2(), Données.getCouleurPrincipale3()));
 
@@ -234,7 +234,7 @@ public class FichierClient extends javax.swing.JFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -273,12 +273,12 @@ public class FichierClient extends javax.swing.JFrame {
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel5.setForeground(new java.awt.Color(255, 0, 51));
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("vante a déja été realisée !");
+        jLabel5.setText("vente a déja été realisée !");
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(255, 0, 51));
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel6.setText("Erreur : La supprétion est impossible car une  ");
+        jLabel6.setText("Erreur : La suppression est impossible car une  ");
 
         jPanel6.setBackground(new java.awt.Color(Données.getCouleurPrincipale1(), Données.getCouleurPrincipale2(), Données.getCouleurPrincipale3()));
 
@@ -365,7 +365,7 @@ public class FichierClient extends javax.swing.JFrame {
         jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(255, 0, 51));
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel8.setText("Erreur : La suppression/modification est imposible :");
+        jLabel8.setText("Erreur : La suppression/modification est impossible :");
 
         jPanel9.setBackground(new java.awt.Color(Données.getCouleurPrincipale1(), Données.getCouleurPrincipale2(), Données.getCouleurPrincipale3()));
 
@@ -394,15 +394,16 @@ public class FichierClient extends javax.swing.JFrame {
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel8Layout.createSequentialGroup()
-                .addGap(48, 48, 48)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(42, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButtonErreurFermer1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(151, 151, 151))
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addGap(48, 48, 48)
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addGap(146, 146, 146)
+                        .addComponent(jButtonErreurFermer1, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -433,13 +434,14 @@ public class FichierClient extends javax.swing.JFrame {
 
         jPanel10.setMinimumSize(new java.awt.Dimension(616, 278));
 
-        nouvelleCarteFid.setText("Création fidélitée");
+        nouvelleCarteFid.setText("Création fidélité");
         nouvelleCarteFid.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 nouvelleCarteFidActionPerformed(evt);
             }
         });
 
+        BoutonValiderCarte.setBackground(new java.awt.Color(102, 255, 102));
         BoutonValiderCarte.setText("Valider");
         BoutonValiderCarte.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -471,7 +473,7 @@ public class FichierClient extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jLabel9.setText("N° Carte Fidélitée");
+        jLabel9.setText("N° Carte Fidélité");
 
         jTextFieldGpts.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jTextFieldGpts.setText("0");
@@ -533,7 +535,7 @@ public class FichierClient extends javax.swing.JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(Données.getNomLogiciel() + " | Ficher Articles ");
+        setTitle(Données.getNomLogiciel() + " | Fichier Client ");
         setBackground(new java.awt.Color(255, 255, 255));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
@@ -640,7 +642,7 @@ public class FichierClient extends javax.swing.JFrame {
         jTextFieldDateCreation.setDisabledTextColor(new java.awt.Color(0, 0, 0));
         jTextFieldDateCreation.setEnabled(false);
 
-        jButtonSuprimer.setBackground(new java.awt.Color(255, 102, 102));
+        jButtonSuprimer.setBackground(new java.awt.Color(255, 51, 51));
         jButtonSuprimer.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
         jButtonSuprimer.setText("Supprimer *");
         jButtonSuprimer.addActionListener(new java.awt.event.ActionListener() {
@@ -718,7 +720,7 @@ public class FichierClient extends javax.swing.JFrame {
         jLabelNom2.setText("Ville");
 
         jLabelNom3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabelNom3.setText("Code Postale");
+        jLabelNom3.setText("Code Postal");
 
         jLabelPrénom1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabelPrénom1.setText("Email");
@@ -732,7 +734,7 @@ public class FichierClient extends javax.swing.JFrame {
         jLabelDernierModif2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabelDernierModif2.setText("Solde points");
 
-        jButtonCarteFid.setText("Gérer une carte de fidélitée");
+        jButtonCarteFid.setText("Gérer une carte de fidélité");
         jButtonCarteFid.setEnabled(false);
         jButtonCarteFid.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -803,7 +805,7 @@ public class FichierClient extends javax.swing.JFrame {
                             .addComponent(jTextFieldSoldePts))
                         .addGap(41, 41, 41)
                         .addComponent(jButtonCarteFid, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(58, Short.MAX_VALUE))
+                        .addContainerGap(50, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabelDateCreation, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -855,7 +857,7 @@ public class FichierClient extends javax.swing.JFrame {
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(jTextFieldVille, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabelNom3, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)

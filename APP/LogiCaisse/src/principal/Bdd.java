@@ -30,7 +30,7 @@ public class Bdd {// Toutes les variables de connexion au serveur ou sont stock√
         return conn;
     }
     public static void lostCO(CommunicationsException e){//QUand on perd la connexion , on lance la fenetre d'erreur de connexion(ne pas oublier dans le catch)
-        System.out.println("Connexion perdus");
+        System.out.println("Connexion perdue");
         ErreurConnexionBdd.main(null);
     }
 }

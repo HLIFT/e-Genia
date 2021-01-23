@@ -124,7 +124,7 @@ public class ConnexionApp extends javax.swing.JFrame{
 
         LogoCO.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Images/LogoUser.png"))); // NOI18N
 
-        BoutonValider.setBackground(new java.awt.Color(0, 255, 0));
+        BoutonValider.setBackground(new java.awt.Color(102, 255, 102));
         BoutonValider.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         BoutonValider.setText("VALIDER");
         BoutonValider.addActionListener(new java.awt.event.ActionListener() {

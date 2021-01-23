@@ -55,12 +55,14 @@ public class ConfigMachine extends javax.swing.JFrame {
     private static int idChoisi;
     private static String[][] identifiant = new String[20][2]; 
     private static int typeChoisi;
-    private static String[][] typeID = new String[20][2];
+    private static String[][] typeID = new String[11][2];
     
     
     private static Object[][] palierR = new Object[countPalierR()][3];
-    private static String [] nomColPalierR = { "Numero Palier", "Palier en Point", "Reduction en Euro"};
+    private static String [] nomColPalierR = { "Numéro Palier", "Palier en Points", "Réduction en Euro"};
     
+    private static Object[][] userType = new Object[10][7];
+    private static String [] nomColUserType = { "Types droits", "DUA_FichierClient", "DUA_FichierArticle", "DUA_AchatVente", "DUA_Encaissement", "DUA_Admin", "#id_DUA"};
     /**
      * Creates new form ConfigMachine
      */
@@ -72,7 +74,7 @@ public class ConfigMachine extends javax.swing.JFrame {
         jDialogConfValidIDComptoir.setLocationRelativeTo(this);
         
         recupIdUser();
-        recupTypeID();
+        recupTypeDroits();
         recupIDclientC();
         recupEuroPts();
         
@@ -182,8 +184,6 @@ public class ConfigMachine extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
         jTextFieldIdentifiant = new javax.swing.JTextField();
@@ -196,6 +196,8 @@ public class ConfigMachine extends javax.swing.JFrame {
         jRadioButtonActif = new javax.swing.JRadioButton();
         jRadioButtonInactif = new javax.swing.JRadioButton();
         jLabel29 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
         jPanel7 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
 
@@ -211,7 +213,7 @@ public class ConfigMachine extends javax.swing.JFrame {
             }
         });
 
-        jButtonCSOui.setBackground(new java.awt.Color(255, 102, 102));
+        jButtonCSOui.setBackground(new java.awt.Color(255, 51, 51));
         jButtonCSOui.setText("OUI");
         jButtonCSOui.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -221,10 +223,10 @@ public class ConfigMachine extends javax.swing.JFrame {
 
         jLabel26.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel26.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel26.setText("Etes vous sûr de modifier l'ID du client comptoir ?");
+        jLabel26.setText("Etes vous sûr de vouloir modifier l'ID du client comptoir ?");
 
         jLabel27.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel27.setText("Cette action peut entrainer un problème de creation");
+        jLabel27.setText("Cette action peut entrainer un problème de création");
 
         jLabel28.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel28.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -279,7 +281,7 @@ public class ConfigMachine extends javax.swing.JFrame {
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle(Données.getNomLogiciel() + " | Configuration Général ");
+        setTitle(Données.getNomLogiciel() + " | Configuration Générale ");
         setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
@@ -321,7 +323,7 @@ public class ConfigMachine extends javax.swing.JFrame {
         jLabel23.setForeground(new java.awt.Color(255, 51, 51));
         jLabel23.setText("Attention : l'ID client comptoir doit être correct");
 
-        bValidIDclientC.setBackground(new java.awt.Color(51, 255, 0));
+        bValidIDclientC.setBackground(new java.awt.Color(102, 255, 102));
         bValidIDclientC.setText("Valider *");
         bValidIDclientC.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -330,7 +332,7 @@ public class ConfigMachine extends javax.swing.JFrame {
         });
 
         jLabel25.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
-        jLabel25.setText("Par default 1");
+        jLabel25.setText("Par defaut 1");
 
         javax.swing.GroupLayout ConfigLogicLayout = new javax.swing.GroupLayout(ConfigLogic);
         ConfigLogic.setLayout(ConfigLogicLayout);
@@ -349,7 +351,7 @@ public class ConfigMachine extends javax.swing.JFrame {
                                 .addGap(44, 44, 44)
                                 .addComponent(jTextFieldIdClientComptoir)))
                         .addGap(53, 53, 53)
-                        .addComponent(bValidIDclientC, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(bValidIDclientC)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(ConfigLogicLayout.createSequentialGroup()
                         .addGap(67, 67, 67)
@@ -358,7 +360,7 @@ public class ConfigMachine extends javax.swing.JFrame {
                         .addComponent(jLabel23)))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ConfigLogicLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
+                .addGap(0, 2, Short.MAX_VALUE)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 1068, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         ConfigLogicLayout.setVerticalGroup(
@@ -378,16 +380,16 @@ public class ConfigMachine extends javax.swing.JFrame {
                     .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(502, Short.MAX_VALUE))
+                .addContainerGap(508, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Configuration Logiciel", ConfigLogic);
 
         jLabel30.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel30.setText("Configuration des cartes de fidelitées :");
+        jLabel30.setText("Configuration des cartes de fidélité :");
 
         jLabel31.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel31.setText("Valeure des points : ");
+        jLabel31.setText("Valeur des points : ");
 
         jLabel32.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel32.setText("points");
@@ -430,7 +432,7 @@ public class ConfigMachine extends javax.swing.JFrame {
         jTable1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(jTable1);
 
-        jButtonValiderDonnéesMag1.setBackground(new java.awt.Color(51, 255, 51));
+        jButtonValiderDonnéesMag1.setBackground(new java.awt.Color(102, 255, 102));
         jButtonValiderDonnéesMag1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButtonValiderDonnéesMag1.setText("Valider");
         jButtonValiderDonnéesMag1.addActionListener(new java.awt.event.ActionListener() {
@@ -439,7 +441,7 @@ public class ConfigMachine extends javax.swing.JFrame {
             }
         });
 
-        jButtonValiderDonnéesMag2.setBackground(new java.awt.Color(51, 255, 51));
+        jButtonValiderDonnéesMag2.setBackground(new java.awt.Color(102, 255, 102));
         jButtonValiderDonnéesMag2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButtonValiderDonnéesMag2.setText("Valider");
         jButtonValiderDonnéesMag2.addActionListener(new java.awt.event.ActionListener() {
@@ -512,7 +514,7 @@ public class ConfigMachine extends javax.swing.JFrame {
                     .addContainerGap(472, Short.MAX_VALUE)))
         );
 
-        jTabbedPane1.addTab("Géstion fidélité", jPanel2);
+        jTabbedPane1.addTab("Gestion fidélité", jPanel2);
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setText("Enseigne :");
@@ -579,7 +581,7 @@ public class ConfigMachine extends javax.swing.JFrame {
 
         jTextFieldNoRCF.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        jButtonValiderDonnéesMag.setBackground(new java.awt.Color(51, 255, 51));
+        jButtonValiderDonnéesMag.setBackground(new java.awt.Color(102, 255, 102));
         jButtonValiderDonnéesMag.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButtonValiderDonnéesMag.setText("Valider");
         jButtonValiderDonnéesMag.addActionListener(new java.awt.event.ActionListener() {
@@ -738,14 +740,12 @@ public class ConfigMachine extends javax.swing.JFrame {
 
         jButton5.setBackground(new java.awt.Color(102, 255, 102));
         jButton5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton5.setText("Ajouter");
-
-        jButton6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton6.setText("Modifier");
-
-        jButton7.setBackground(new java.awt.Color(255, 51, 51));
-        jButton7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton7.setText("Supprimer");
+        jButton5.setText("Mettre à jour");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jLabel16.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
         jLabel16.setText("Interface Utisateurs : ");
@@ -781,7 +781,7 @@ public class ConfigMachine extends javax.swing.JFrame {
 
         jLabel21.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         jLabel21.setForeground(new java.awt.Color(255, 51, 51));
-        jLabel21.setText("Attention : La suppréssion des comptes utilisateur est imposible");
+        jLabel21.setText("Attention : La suppression des comptes utilisateurs est impossible");
 
         buttonGroup1.add(jRadioButtonActif);
         jRadioButtonActif.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -795,27 +795,56 @@ public class ConfigMachine extends javax.swing.JFrame {
 
         jLabel29.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         jLabel29.setForeground(new java.awt.Color(255, 51, 51));
-        jLabel29.setText("SI le MDP est vide, il n'est pas mis à jour");
+        jLabel29.setText("Si le MDP est vide, il n'est pas mis à jour");
+
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            userType,
+            nomColUserType) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Boolean.class, java.lang.Integer.class
+            };
+
+            boolean[] canEdit = new boolean [] {
+                true, true, true, true, true, true, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTable2.setRowHeight(18);
+        jTable2.setSelectionBackground(new java.awt.Color(130, 244, 15));
+        jTable2.setSelectionForeground(new java.awt.Color(0, 0, 0));
+        jScrollPane2.setViewportView(jTable2);
+        jTable2.getColumnModel().getColumn(6).setMaxWidth(0);
+        jTable2.getColumnModel().getColumn(6).setMinWidth(0);
+        jTable2.getColumnModel().getColumn(6).setPreferredWidth(0);
 
         javax.swing.GroupLayout CompteUSERLayout = new javax.swing.GroupLayout(CompteUSER);
         CompteUSER.setLayout(CompteUSERLayout);
         CompteUSERLayout.setHorizontalGroup(
             CompteUSERLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jSeparator1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CompteUSERLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel29)
+                .addGap(292, 292, 292))
             .addGroup(CompteUSERLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(CompteUSERLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(CompteUSERLayout.createSequentialGroup()
+                        .addComponent(jScrollPane2)
+                        .addContainerGap())
+                    .addGroup(CompteUSERLayout.createSequentialGroup()
                         .addGroup(CompteUSERLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(ListeIdentifant, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(CompteUSERLayout.createSequentialGroup()
-                                .addComponent(jButton5)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton6)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton7))
                             .addComponent(jLabel16))
-                        .addGap(5, 5, 5)
+                        .addGap(125, 125, 125)
                         .addGroup(CompteUSERLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jTextFieldIdentifiant, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -843,12 +872,10 @@ public class ConfigMachine extends javax.swing.JFrame {
                         .addContainerGap())
                     .addGroup(CompteUSERLayout.createSequentialGroup()
                         .addComponent(jLabel17)
-                        .addGap(0, 0, Short.MAX_VALUE))))
-            .addComponent(jSeparator1)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, CompteUSERLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel29)
-                .addGap(292, 292, 292))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(CompteUSERLayout.createSequentialGroup()
+                        .addComponent(jButton5)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         CompteUSERLayout.setVerticalGroup(
             CompteUSERLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -882,11 +909,10 @@ public class ConfigMachine extends javax.swing.JFrame {
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 9, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel17)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 311, Short.MAX_VALUE)
-                .addGroup(CompteUSERLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton5)
-                    .addComponent(jButton6)
-                    .addComponent(jButton7))
+                .addGap(44, 44, 44)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                .addComponent(jButton5)
                 .addContainerGap())
         );
 
@@ -907,7 +933,7 @@ public class ConfigMachine extends javax.swing.JFrame {
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Configuration Général");
+        jLabel1.setText("Configuration Générale");
         jLabel1.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -1196,12 +1222,40 @@ public class ConfigMachine extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButtonValiderDonnéesMag2ActionPerformed
 
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        int i = 0;
+        while(i < jTable2.getRowCount()){
+            try {
+                    String sql = "UPDATE DroitUA SET DUA_Type=?,DUA_FichierClient=?,DUA_FichierArticle=?,DUA_AchatVente=?,DUA_Encaissement=?,DUA_Admin=? WHERE idDroitUA = ?";
+                    PreparedStatement majTypeDroits = conn.prepareStatement(sql);
+                    
+                    majTypeDroits.setString(1, (String) jTable2.getValueAt(i, 0));
+                    majTypeDroits.setBoolean(2, (boolean) jTable2.getValueAt(i, 1));
+                    majTypeDroits.setBoolean(3, (boolean) jTable2.getValueAt(i, 2));
+                    majTypeDroits.setBoolean(4, (boolean) jTable2.getValueAt(i, 3));
+                    majTypeDroits.setBoolean(5, (boolean) jTable2.getValueAt(i, 4));
+                    majTypeDroits.setBoolean(6, (boolean) jTable2.getValueAt(i, 5));
+                    majTypeDroits.setInt(7, (int) jTable2.getValueAt(i, 6));
+                    
+                    majTypeDroits.execute();
+                    majTypeDroits.close();
+
+                } catch (CommunicationsException e) {
+                    Bdd.lostCO(e);
+                } catch (SQLException ex) {
+                    Logger.getLogger(ConfigMachine.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            i++;
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
         if(Données.getDUA_Admin() == 1){
             recupPalierR();
+            recupTypeDroits();
             try {
                 UIManager.setLookAndFeel( new FlatLightLaf() );
             } catch( Exception ex ) {
@@ -1303,15 +1357,26 @@ public class ConfigMachine extends javax.swing.JFrame {
             Logger.getLogger(ConnexionApp.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    public static void recupTypeID(){
+    public static void recupTypeDroits(){
         try {
             Statement state = conn.createStatement();
-            ResultSet result = state.executeQuery("SELECT idDroitUA, DUA_Type FROM DroitUA");
+            ResultSet result = state.executeQuery("SELECT * FROM DroitUA");
             
             int i = 0;
             while(result.next()){
-                typeID[i][0] = result.getString("DUA_Type");
-                typeID[i][1] = result.getString("idDroitUA");
+                if (!result.getString("DUA_Type").equals("")){
+                    typeID[i][0] = result.getString("DUA_Type");
+                    typeID[i][1] = result.getString("idDroitUA");
+                }
+                
+                userType[i][0] = result.getString("DUA_Type");
+                userType[i][1] = result.getBoolean("DUA_FichierClient");
+                userType[i][2] = result.getBoolean("DUA_FichierArticle");
+                userType[i][3] = result.getBoolean("DUA_AchatVente");
+                userType[i][4] = result.getBoolean("DUA_Encaissement");
+                userType[i][5] = result.getBoolean("DUA_Admin");
+                userType[i][6] = result.getInt("idDroitUA");
+               
                 i++;
             }
             result.close();
@@ -1408,8 +1473,6 @@ public class ConfigMachine extends javax.swing.JFrame {
     private javax.swing.JButton bValidIDclientC;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
     private javax.swing.JButton jButtonAjoutUSER;
     private javax.swing.JButton jButtonCSNon;
     private javax.swing.JButton jButtonCSOui;
@@ -1461,10 +1524,12 @@ public class ConfigMachine extends javax.swing.JFrame {
     private javax.swing.JRadioButton jRadioButtonActif;
     private javax.swing.JRadioButton jRadioButtonInactif;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
     private javax.swing.JTextField jTextFieldCapitale;
     private javax.swing.JTextField jTextFieldCodeNAF;
     private javax.swing.JTextField jTextFieldCodePostale;
